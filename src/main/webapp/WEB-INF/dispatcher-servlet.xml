@@ -1,0 +1,41 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+
+http://www.springframework.org/schema/beans
+
+
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+
+http://www.springframework.org/schema/context
+
+
+http://www.springframework.org/schema/context/spring-context-3.2.xsd
+
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<context:component-scan base-package="controller" />
+
+<!-- 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="prefix"> <value>/WEB-INF/view/</value> </property> <property 
+		name="suffix"> <value>.jsp</value> </property> </bean> -->
+	<bean
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="WEB-INF/view/" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	<!-- freemarker视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="suffix" value=".jsp" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<!-- 此变量值为pageContext.request, 页面使用方法：rc.contextPath -->
+		<property name="requestContextAttribute" value="rc" />
+	</bean>
+	<mvc:annotation-driven />
+	<mvc:resources mapping="/script/**" location="/WEB-INF/res/script/"/> 
+	<mvc:default-servlet-handler/>  
+</beans>
