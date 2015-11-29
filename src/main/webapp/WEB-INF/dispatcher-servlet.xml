@@ -55,6 +55,8 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		</property> -->
 	</bean>
 	<mvc:annotation-driven />
-	<mvc:resources mapping="/script/**" location="/WEB-INF/res/script/"/> 
+	<mvc:resources mapping="/js/**" location="/WEB-INF/res/js/"/> 
+	<mvc:resources mapping="/css/**" location="/WEB-INF/res/css/"/>
+	<mvc:resources mapping="/fonts/**" location="/WEB-INF/res/fonts/"/>
 	<mvc:default-servlet-handler/>  
 </beans>
