@@ -22,18 +22,37 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 <!-- 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
 		<property name="prefix"> <value>/WEB-INF/view/</value> </property> <property 
 		name="suffix"> <value>.jsp</value> </property> </bean> -->
-	<bean
+	<!-- <bean
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 		<property name="templateLoaderPath" value="WEB-INF/view/" />
 		<property name="defaultEncoding" value="UTF-8" />
-	</bean>
+	</bean> -->
 	<!-- freemarker视图解析器 -->
-	<bean
+	<!-- <bean
 		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
 		<property name="suffix" value=".jsp" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
-		<!-- 此变量值为pageContext.request, 页面使用方法：rc.contextPath -->
+		此变量值为pageContext.request, 页面使用方法：rc.contextPath
 		<property name="requestContextAttribute" value="rc" />
+	</bean> -->
+	<bean id="viewResolver"
+		class="com.github.jknack.handlebars.springmvc.HandlebarsViewResolver">
+		<property name="prefix" value="/WEB-INF/view" />
+		<property name="suffix" value=".htpl" />		
+		<!-- <property name="helpers">
+			<map>
+				<entry key="imageURIBroker">
+					<bean class="com.taotaosou.tts.helper.ImageURIBrokerHelper" />
+				</entry>
+				
+				<entry key="assign">
+					<bean class="com.taotaosou.tts.helper.AssignHelper" />
+				</entry>
+				<entry key="json">
+					<bean class="com.taotaosou.tts.helper.Jackson2Helper" />
+				</entry>			    
+			</map>
+		</property> -->
 	</bean>
 	<mvc:annotation-driven />
 	<mvc:resources mapping="/script/**" location="/WEB-INF/res/script/"/> 
