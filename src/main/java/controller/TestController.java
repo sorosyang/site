@@ -7,9 +7,11 @@ import java.io.InputStream;
 
 import model.Person;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -37,23 +39,33 @@ public class TestController {
 		ModelAndView mv=new ModelAndView("testhbs");		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		//http://openapi.ctrip.com/Hotel/OTA_Ping.asmx
-		HttpPost httpPost = new HttpPost("http://openapi.ctrip.com/Hotel/OTA_Ping.asmx");
+		HttpPost httpPost = new HttpPost("http://openapi.ctrip.com/Hotel/OTA_Ping.asmx");		
 		StringBuffer sb=new StringBuffer();
+		StringBuffer sbBody=new StringBuffer();
 		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-		sb.append("<Request>");
+		sb.append("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><Request xmlns=\"http://ctrip.com/\"><requestXML>");
+		sbBody.append("<Request>");
 		//		<!--AllianceID:分销商ID;SID:站点ID;TimeStamp:响应时间戳（从1970年到现在的秒数）;RequestType:请求接口的类型;Signature:MD5加密串-->
-		sb.append("<Header  AllianceID=\"x\" SID=\"xx\" TimeStamp=\"xxxxxx\"  RequestType=\" OTA_Ping \" Signature=\"xxxxxxx\" />");				
-		sb.append("<HotelRequest>");
-		sb.append("<RequestBody xmlns:ns=\"http://www.opentravel.org/OTA/2003/05\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">");
-		sb.append("<ns:OTA_PingRQ>");
+		sbBody.append("<Header AllianceID=\"1\" SID=\"2\" TimeStamp=\"1450267286\" Signature=\"8E1AC0EA7E64A9D5BD869B61203DA678\" RequestType=\"OTA_Ping\" AsyncRequest=\"false\" Timeout=\"0\" MessagePriority=\"3\" />");				
+		sbBody.append("<HotelRequest>");
+		sbBody.append("<RequestBody xmlns:ns=\"http://www.opentravel.org/OTA/2003/05\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">");
+		sbBody.append("<ns:OTA_PingRQ>");
 		//		<!--测试文本：string类型-->
-		sb.append("<ns:EchoData>阿什顿</ns:EchoData>");				
-		sb.append("</ns:OTA_PingRQ>");
-		sb.append("</RequestBody>");
-		sb.append("</HotelRequest>");
-		sb.append("</Request>");
+		sbBody.append("<ns:EchoData>阿什顿</ns:EchoData>");				
+		sbBody.append("</ns:OTA_PingRQ>");
+		sbBody.append("</RequestBody>");
+		sbBody.append("</HotelRequest>");
+		sbBody.append("</Request>");
+		sb.append(StringEscapeUtils.escapeXml(sbBody.toString()));
+		sb.append("</requestXML></Request></soap:Body></soap:Envelope>");
 		HttpEntity inputEntity=new StringEntity(sb.toString());		
 		httpPost.setEntity(inputEntity);
+		RequestConfig requestConfig = RequestConfig.custom()
+	            .setSocketTimeout(1000)
+	            .setConnectTimeout(1000)
+	            .build();		
+		httpPost.setConfig(requestConfig);
+		httpPost.addHeader("Content-Type", "text/xml; charset=utf-8");
 		CloseableHttpResponse response2 = httpclient.execute(httpPost);
 		HttpEntity he= response2.getEntity();
 		StatusLine sl= response2.getStatusLine();
@@ -76,7 +88,7 @@ public class TestController {
             outStream.write(data, 0, count);  
           
         data = null;  
-        return new String(outStream.toByteArray());  
+        return new String(outStream.toByteArray(),"utf-8");  
     }  
 	
 	@RequestMapping("/handlebars")
